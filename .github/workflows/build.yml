@@ -16,17 +16,7 @@ jobs:
         run: |
           mkdir -p www
           unzip -o www.zip -d www
-          cat << 'EOF' > config.xml
-          <?xml version='1.0' encoding='utf-8'?>
-          <widget id="com.mygame.app" version="1.0.0" xmlns="http://w3.org">
-              <name>Моя Игра</name>
-              <description>Аркадная игра</description>
-              <content src="index.html" />
-              <access origin="*" />
-              <preference name="Orientation" value="landscape" />
-              <preference name="Fullscreen" value="true" />
-          </widget>
-          EOF
+          printf '<?xml version="1.0" encoding="utf-8"?><widget id="com.mygame.app" version="1.0.0" xmlns="http://w3.org"><name>Моя Игра</name><description>Аркадная игра</description><content src="index.html" /><access origin="*" /><preference name="Orientation" value="landscape" /><preference name="Fullscreen" value="true" /></widget>' > config.xml
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
