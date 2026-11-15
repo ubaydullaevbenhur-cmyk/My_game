@@ -16,7 +16,7 @@ jobs:
         run: |
           mkdir -p www
           unzip -o www.zip -d www
-          printf '<?xml version="1.0" encoding="utf-8"?><widget id="com.mygame.app" version="1.0.0" xmlns="http://w3.org"><name>Моя Игра</name><description>Аркадная игра</description><content src="index.html" /><access origin="*" /><preference name="Orientation" value="landscape" /><preference name="Fullscreen" value="true" /></widget>' > config.xml
+          printf '<?xml version="1.0" encoding="utf-8"?><widget id="com.mygame.app" version="1.0.0" xmlns="http://w3.org"><name>MyGame</name><description>Arcade game</description><content src="index.html" /><access origin="*" /><preference name="Orientation" value="landscape" /><preference name="Fullscreen" value="true" /></widget>' > config.xml
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -29,14 +29,18 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
 
       - name: Install Cordova & Build APK
         run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
           npm install -g cordova
+          cordova telemetry off
           cordova platform add android
-          cordova build android
+          cordova build android --no-telemetry
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
