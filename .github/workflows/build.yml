@@ -1,0 +1,55 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare Cordova project
+        run: |
+          mkdir -p www
+          unzip -o www.zip -d www
+          cat << 'EOF' > config.xml
+          <?xml version='1.0' encoding='utf-8'?>
+          <widget id="com.mygame.app" version="1.0.0" xmlns="http://w3.org">
+              <name>Моя Игра</name>
+              <description>Аркадная игра</description>
+              <content src="index.html" />
+              <access origin="*" />
+              <preference name="Orientation" value="landscape" />
+              <preference name="Fullscreen" value="true" />
+          </widget>
+          EOF
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Cordova & Build APK
+        run: |
+          npm install -g cordova
+          cordova platform add android
+          cordova build android
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-game-apk
+          path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
