@@ -38,8 +38,7 @@ jobs:
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
           npm install -g cordova
-          cordova telemetry off
-          cordova platform add android
+          cordova platform add android --no-telemetry
           cordova build android --no-telemetry
 
       - name: Upload APK
